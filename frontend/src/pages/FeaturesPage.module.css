@@ -1,0 +1,79 @@
+.hero { padding: 80px 5% 60px; text-align: center; background: linear-gradient(180deg, rgba(0,229,160,.04) 0%, transparent 100%); border-bottom: 1px solid var(--border); }
+.heroH { font-size: clamp(28px,4.5vw,54px); font-weight: 800; letter-spacing: -.025em; margin-bottom: 16px; }
+.heroP { color: var(--muted); font-size: 16px; line-height: 1.75; max-width: 520px; margin: 0 auto; }
+
+.featRow { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); min-height: 440px; }
+.reverse .featVisual { order: -1; }
+@media (max-width: 860px) { .featRow { grid-template-columns: 1fr; } .reverse .featVisual { order: 0; } }
+
+.featContent { padding: 60px 5%; display: flex; flex-direction: column; justify-content: center; }
+.featNum { font-size: 72px; font-weight: 800; color: rgba(0,229,160,.05); line-height: 1; margin-bottom: -14px; }
+.featH   { font-size: clamp(22px,3vw,34px); font-weight: 800; margin-bottom: 14px; letter-spacing: -.02em; }
+.featP   { color: var(--muted); font-size: 15px; line-height: 1.8; margin-bottom: 22px; }
+.points  { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.points li { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.points li::before { content: '→'; color: var(--green); flex-shrink: 0; font-weight: 800; margin-top: 1px; }
+
+.featVisual {
+  background: var(--bg3); border-left: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; padding: 40px;
+  min-height: 320px;
+}
+body.light .featVisual { background: #f8fafc; }
+.reverse .featVisual { border-left: none; border-right: 1px solid var(--border); }
+@media (max-width: 860px) { .featVisual { border-left: none !important; border-right: none !important; border-top: 1px solid var(--border); } }
+
+/* Map visual */
+.mockMap { position: relative; width: 100%; max-width: 320px; height: 260px; background: var(--bg2); border-radius: 12px; overflow: hidden; border: 1px solid var(--border2); }
+body.light .mockMap { background: #e8f4ff; }
+.mapGrid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px); background-size: 32px 32px; }
+body.light .mapGrid { background-image: linear-gradient(rgba(0,0,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.04) 1px,transparent 1px); }
+.mapPin { position: absolute; width: 32px; height: 32px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,.35); }
+.pinLabel { transform: rotate(45deg); font-size: 9px; font-weight: 800; color: #07090f; }
+.destPin { position: absolute; top: 38%; left: 42%; font-size: 26px; }
+
+/* Tiers visual */
+.tiersGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 300px; }
+.tierCard { background: var(--bg2); border: 1px solid; border-radius: 10px; padding: 16px; text-align: center; }
+body.light .tierCard { background: #fff; }
+.tierDot  { font-size: 22px; margin-bottom: 6px; }
+.tierLabel { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 4px; }
+.tierRate  { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.tierFeat  { font-size: 11px; color: var(--muted2); }
+
+/* Slots visual */
+.slotList { display: flex; flex-direction: column; gap: 0; width: 100%; max-width: 300px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; overflow: hidden; }
+body.light .slotList { background: #fff; }
+.slotRow { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 12.5px; }
+.slotRow:last-child { border-bottom: none; }
+.slotIcon { font-size: 16px; flex-shrink: 0; }
+.slotName { flex: 1; font-weight: 600; }
+.slotTime { color: var(--muted); font-size: 11px; white-space: nowrap; }
+
+/* Recs visual */
+.recCards { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 280px; }
+.recCard  { background: var(--bg2); border: 1px solid; border-radius: 11px; padding: 14px; }
+body.light .recCard { background: #fff; }
+.recName  { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.recRate  { font-size: 20px; font-weight: 800; }
+
+/* Congestion visual */
+.congWrap { position: relative; width: 100%; max-width: 320px; height: 250px; background: var(--bg2); border-radius: 12px; overflow: hidden; border: 1px solid var(--border2); }
+body.light .congWrap { background: #e8f4ff; }
+.congGrid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px); background-size: 30px 30px; }
+.congZone { position: absolute; border-radius: 50%; border: 2px dashed; animation: czPulse 2.5s infinite; transform: translate(-50%,-50%); }
+@keyframes czPulse { 0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)} }
+.congBadge { position: absolute; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
+
+/* Listing mock */
+.listMock { background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 18px; width: 100%; max-width: 280px; }
+body.light .listMock { background: #fff; }
+.lmTitle { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 14px; }
+.lmRow   { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; font-weight: 600; }
+.lmCheck { border: 1px solid; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; }
+.lmResult { display: flex; justify-content: space-between; align-items: center; background: rgba(0,229,160,.06); border: 1px solid rgba(0,229,160,.15); border-radius: 10px; padding: 12px; margin-top: 14px; }
+
+/* CTA */
+.cta { padding: 70px 5%; text-align: center; background: linear-gradient(135deg, rgba(0,229,160,.04), rgba(59,130,246,.04)); border-top: 1px solid var(--border); }
+.cta h2 { font-size: clamp(24px,4vw,42px); font-weight: 800; letter-spacing: -.02em; margin-bottom: 12px; }
+.cta p  { color: var(--muted); font-size: 15px; margin-bottom: 30px; }

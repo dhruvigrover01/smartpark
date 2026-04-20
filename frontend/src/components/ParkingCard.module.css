@@ -1,0 +1,22 @@
+.card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 13px; margin-bottom: 8px;
+  cursor: pointer; transition: all .17s;
+}
+body.light .card { background: #f8fafc; }
+.card:hover { border-color: rgba(0,229,160,.3); transform: translateX(2px); }
+.sel  { border-color: rgba(0,229,160,.55) !important; background: rgba(0,229,160,.04) !important; }
+.closed { opacity: .55; }
+
+.row1 { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 5px; }
+.name { font-size: 13px; font-weight: 700; line-height: 1.3; flex: 1; }
+.rate { font-size: 16px; font-weight: 800; white-space: nowrap; }
+
+.addr { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+
+.pills { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 9px; }
+
+.footer { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+.bar  { flex: 1; height: 3px; background: rgba(255,255,255,.07); border-radius: 3px; overflow: hidden; }
+body.light .bar { background: rgba(0,0,0,.08); }
+.fill { height: 100%; border-radius: 3px; transition: width .5s; }

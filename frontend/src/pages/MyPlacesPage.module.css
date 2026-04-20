@@ -1,0 +1,89 @@
+.page { padding-top: var(--nav-h); min-height: 100vh; }
+
+.header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 40px 5% 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap; gap: 16px;
+}
+.h1  { font-size: clamp(26px,4vw,40px); font-weight: 800; letter-spacing: -.02em; }
+.sub { color: var(--muted); font-size: 15px; margin-top: 6px; }
+
+.tabs {
+  display: flex; padding: 0 5%;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto; gap: 0;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 16px 22px; font-size: 14px; font-weight: 600;
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; transition: .15s; white-space: nowrap;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.tab:hover  { color: var(--text); }
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+.body   { padding: 32px 5%; }
+
+/* Loading */
+.loading { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 80px; color: var(--muted); font-size: 14px; }
+.spinner { width: 36px; height: 36px; border: 3px solid rgba(0,229,160,.2); border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Empty state */
+.empty { text-align: center; padding: 64px 24px; max-width: 380px; margin: 0 auto; }
+.emptyIcon { font-size: 52px; margin-bottom: 16px; }
+.empty h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.empty p  { color: var(--muted); font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
+
+/* Listings grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px,1fr)); gap: 16px; }
+
+.placeCard {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; transition: .18s;
+}
+body.light .placeCard { background: #fff; }
+.placeCard:hover { border-color: rgba(0,229,160,.3); }
+
+.pcTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.pcType { font-size: 28px; }
+.pcName { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+.pcAddr { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.pcMeta { display: flex; gap: 6px; font-size: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.pcSec  { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; }
+.secBit { font-size: 16px; opacity: .3; transition: .15s; }
+.secBitOn { opacity: 1; }
+.pcBtns { display: flex; gap: 8px; }
+.pcBtns .btn { flex: 1; justify-content: center; }
+.removeBtn { background: rgba(239,68,68,.08) !important; border: 1px solid rgba(239,68,68,.25) !important; color: var(--red) !important; }
+.removeBtn:hover { background: rgba(239,68,68,.15) !important; }
+
+/* Bookings */
+.bookList { display: flex; flex-direction: column; gap: 12px; }
+.bookCard {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; flex-wrap: wrap;
+}
+body.light .bookCard { background: #fff; }
+.bcLeft { flex: 1; min-width: 200px; }
+.bcName { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.bcAddr { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.bcMeta { display: flex; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 6px; flex-wrap: wrap; }
+.bcRef  { font-size: 11px; font-weight: 700; color: var(--muted2); font-family: monospace; }
+.bcRight { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.bcTotal { font-size: 22px; font-weight: 800; }
+.cancelBtn { background: rgba(239,68,68,.08) !important; border: 1px solid rgba(239,68,68,.25) !important; color: var(--red) !important; }
+
+/* Earnings */
+.earnStats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 32px; }
+@media (max-width: 600px) { .earnStats { grid-template-columns: 1fr; } }
+.earnCard {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; text-align: center;
+}
+body.light .earnCard { background: #fff; }
+.earnVal { font-size: 36px; font-weight: 800; margin-bottom: 6px; }
+.earnLbl { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }

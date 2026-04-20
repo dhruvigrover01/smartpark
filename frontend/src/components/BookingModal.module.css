@@ -1,0 +1,25 @@
+.title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.sub   { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+.picker { display: flex; align-items: center; gap: 14px; background: var(--bg3); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+body.light .picker { background: var(--bg4); }
+.pickerBtn { width: 40px; height: 40px; border-radius: 9px; background: var(--bg2); border: 1px solid var(--border2); color: var(--text); font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .15s; }
+.pickerBtn:hover { border-color: var(--green); color: var(--green); }
+.pickerVal { flex: 1; text-align: center; font-size: 36px; font-weight: 800; color: var(--green); }
+.pickerVal small { font-size: 14px; color: var(--muted); font-weight: 500; }
+
+.totalBox { background: rgba(0,229,160,.05); border: 1px solid rgba(0,229,160,.15); border-radius: 12px; padding: 14px; margin-bottom: 18px; }
+.tRow { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; color: var(--muted); }
+.tTotal { font-size: 17px; font-weight: 800; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.07); margin-top: 8px; margin-bottom: 0; color: var(--text); }
+
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btns .btn { justify-content: center; padding: 13px; }
+
+/* Success state */
+.success { text-align: center; padding: 10px 0; }
+.successIcon { font-size: 54px; margin-bottom: 14px; animation: bIn .4s ease; }
+@keyframes bIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.success h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.receipt { background: rgba(0,229,160,.06); border: 1px solid rgba(0,229,160,.15); border-radius: 12px; padding: 14px; text-align: left; margin-bottom: 20px; }
+.rRow { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: var(--muted); }
+.doneBtn { width: 100%; justify-content: center; padding: 13px; }
