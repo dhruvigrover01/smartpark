@@ -74,6 +74,47 @@ exports.create = async (req, res, next) => {
     res.status(201).json({ spot });
   } catch (err) { next(err); }
 };
+// POST /api/parking/map  (save map parking)
+exports.createFromMap = async (req, res, next) => {
+  try {
+    let { name, address, lat, lng, price } = req.body;
+
+    console.log("MAP DATA:", req.body);
+
+    lat = parseFloat(lat);
+    lng = parseFloat(lng);
+
+    if (!name || isNaN(lat) || isNaN(lng)) {
+      return res.status(400).json({ error: 'Invalid map data.' });
+    }
+
+    // ✅ simple duplicate check
+    let spot = await Parking.findOne({ name });
+
+    if (!spot) {
+      spot = await Parking.create({
+  name,
+  address: address || "Unknown",
+  owner: req.user._id,          //  ADD THIS
+  ownerName: req.user.name,     // (optional but good)
+  location: {
+    type: "Point",
+    coordinates: [lng, lat],
+  },
+  price: price || 20,
+  slots: { total: 10, available: 10 },
+  verified: true,
+  status: "active",
+});
+    }
+
+    res.json({ spot });
+
+  } catch (err) {
+    console.error("CREATE MAP ERROR:", err);
+    next(err);
+  }
+};
 
 // PUT /api/parking/:id  (owner or admin)
 exports.update = async (req, res, next) => {

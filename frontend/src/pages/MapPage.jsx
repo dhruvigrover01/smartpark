@@ -5,11 +5,12 @@ import L from 'leaflet';
 import toast from 'react-hot-toast';
 import { parkingAPI } from '../api';
 import { geocode, fetchOSMParking, osmToSpot, addSmartTags, isNowOpen, getTier } from '../utils';
-import { useAuth } from '../context/AuthContext';
-import ParkingCard    from '../components/ParkingCard';
-import DetailDrawer   from '../components/DetailDrawer';
-import BookingModal   from '../components/BookingModal';
-import AuthModal      from '../components/AuthModal';
+import { useAuth }   from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';   // ← NEW
+import ParkingCard  from '../components/ParkingCard';
+import DetailDrawer from '../components/DetailDrawer';
+import BookingModal from '../components/BookingModal';
+import AuthModal    from '../components/AuthModal';
 import styles from './MapPage.module.css';
 
 // ── Custom marker icon factory ──
@@ -55,6 +56,7 @@ const SUGGESTIONS = [
 
 export default function MapPage() {
   const { isLoggedIn } = useAuth();
+  const { socket, isConnected } = useSocket();              // ← NEW
   const [searchParams] = useSearchParams();
 
   const [query,    setQuery]    = useState(searchParams.get('q') || '');
@@ -69,10 +71,47 @@ export default function MapPage() {
   const [detailSpot, setDetailSpot] = useState(null);
   const [bookSpot,   setBookSpot]   = useState(null);
   const [showAuth,   setShowAuth]   = useState(false);
+  const [flashId,    setFlashId]    = useState(null);       // ← NEW: tracks which pin to animate
   const sugTimer = useRef(null);
 
   // Auto-search from URL param on load
   useEffect(() => { if (query) doSearch(query); }, []);
+
+  // ── NEW: Real-time slot updates via Socket.io ─────────────────────
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleSlotUpdate = ({ parkingId, available, total }) => {
+      // Update the matching spot in state — React re-renders only that marker
+      setSpots(prev =>
+        prev.map(s =>
+          s._id === parkingId
+            ? { ...s, slots: { ...s.slots, available, total } }
+            : s
+        )
+      );
+
+      // Also update detailSpot if it's the one currently open in the drawer
+      setDetailSpot(prev =>
+        prev && prev._id === parkingId
+          ? { ...prev, slots: { ...prev.slots, available, total } }
+          : prev
+      );
+
+      // Flash the pin so users notice the change
+      setFlashId(parkingId);
+      setTimeout(() => setFlashId(null), 800);
+
+      // Toast only when a spot becomes full
+      if (available === 0) {
+        toast('A nearby spot just filled up!', { icon: '🅿️' });
+      }
+    };
+
+    socket.on('slot_updated', handleSlotUpdate);
+    return () => socket.off('slot_updated', handleSlotUpdate); // cleanup
+  }, [socket]);
+  // ─────────────────────────────────────────────────────────────────
 
   const doSearch = useCallback(async (q = query) => {
     if (!q.trim()) { toast.error('Enter a location'); return; }
@@ -166,7 +205,24 @@ export default function MapPage() {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Search Location to Find Parking Nearby
           </div>
-          <div className={styles.liveBadge}><span className="live-dot" />Live · OpenStreetMap</div>
+
+          {/* ── NEW: Live connection indicator ── */}
+          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+              <div style={{
+                width: 7, height: 7, borderRadius: '50%',
+                background: isConnected ? '#00e5a0' : '#ef4444',
+                boxShadow: isConnected ? '0 0 6px #00e5a0' : 'none',
+                animation: isConnected ? 'livePulse 2s infinite' : 'none',
+              }} />
+              <span style={{ fontSize:11, color: isConnected ? '#00e5a0' : '#ef4444', fontWeight:600 }}>
+                {isConnected ? 'Live' : 'Offline'}
+              </span>
+            </div>
+            <div className={styles.liveBadge}><span className="live-dot" />Live · OpenStreetMap</div>
+          </div>
+          {/* ─────────────────────────────────── */}
+
         </div>
 
         {/* Big search bar */}
@@ -232,15 +288,23 @@ export default function MapPage() {
 
             {/* Parking markers */}
             {filtered.map(s => {
-              const tier = getTier(s.security);
-              const open = isNowOpen(s.time?.open, s.time?.close);
+              const tier  = getTier(s.security);
+              const open  = isNowOpen(s.time?.open, s.time?.close);
               const color = open ? tier.color : '#556070';
               const isSel = selId === s._id;
+
+              // ── NEW: flash ring when this pin's slot just updated ──
+              const isFlashing = flashId === s._id;
+
               return (
                 <Marker
                   key={s._id}
                   position={[s.location.coordinates[1], s.location.coordinates[0]]}
-                  icon={makeIcon(color, isSel, s.price)}
+                  icon={makeIcon(
+                    isFlashing ? '#00e5a0' : color,   // briefly flash green on update
+                    isSel,
+                    s.price
+                  )}
                   eventHandlers={{ click: () => { setSelId(s._id); setDetailSpot(s); } }}
                 >
                   <Popup>
@@ -250,6 +314,14 @@ export default function MapPage() {
                       &nbsp;·&nbsp;{tier.label}<br/>
                       <span style={{color:open?'#00e5a0':'#ef4444',fontSize:11}}>{open?'✅ Open':'🔴 Closed'}</span>
                       {s.dist && <span style={{color:'#8895aa',fontSize:11}}> · {s.dist.toFixed(2)} km</span>}
+                      {/* ── NEW: live slot count in popup ── */}
+                      {s.slots && (
+                        <div style={{marginTop:5,fontSize:11,fontWeight:700,color: s.slots.available===0?'#ef4444':'#00e5a0'}}>
+                          {s.slots.available === 0
+                            ? '🔴 Full'
+                            : `🟢 ${s.slots.available}/${s.slots.total} slots`}
+                        </div>
+                      )}
                     </div>
                   </Popup>
                 </Marker>
@@ -303,8 +375,17 @@ export default function MapPage() {
 
       {/* Modals */}
       {detailSpot && <DetailDrawer spot={detailSpot} onClose={() => setDetailSpot(null)} onBook={handleBook} />}
-      {bookSpot   && <BookingModal spot={bookSpot} onClose={() => setBookSpot(null)} />}
+      {bookSpot   && <BookingModal spot={bookSpot}   onClose={() => setBookSpot(null)} />}
       {showAuth   && <AuthModal onClose={() => setShowAuth(false)} />}
+
+      {/* ── NEW: CSS keyframe for live pulse indicator ── */}
+      <style>{`
+        @keyframes livePulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50%       { opacity: .5; transform: scale(1.5); }
+        }
+      `}</style>
+
     </div>
   );
 }

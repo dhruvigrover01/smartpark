@@ -39,6 +39,7 @@ export const parkingAPI = {
   getOne:    (id) => api.get(`/parking/${id}`),
   getMine:   () => api.get('/parking/mine'),
   create:    (data) => api.post('/parking', data),
+  createFromMap: (data) => api.post('/parking/map', data),
   update:    (id, data) => api.put(`/parking/${id}`, data),
   remove:    (id) => api.delete(`/parking/${id}`),
   verify:    (id) => api.patch(`/parking/${id}/verify`),

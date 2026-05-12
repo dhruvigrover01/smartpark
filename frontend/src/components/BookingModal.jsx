@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { bookingAPI } from '../api';
+import { bookingAPI, parkingAPI } from '../api';
 import styles from './BookingModal.module.css';
 
 export default function BookingModal({ spot, onClose }) {
@@ -10,17 +10,45 @@ export default function BookingModal({ spot, onClose }) {
 
   const total = hours * spot.price;
 
-  const confirm = async () => {
-    setLoading(true);
-    try {
-      const { data } = await bookingAPI.create({ parkingId: spot._id, hours });
-      setBooking(data.booking);
-      toast.success(`Booking ${data.booking.bookingRef} confirmed! ₹${data.booking.total}`);
-    } catch (e) {
-      toast.error(e.response?.data?.error || 'Booking failed.');
-    } finally { setLoading(false); }
-  };
+const confirm = async () => {
+  setLoading(true);
+  try {
+    console.log("SPOT FULL:", spot);
+    let parkingId = spot._id;
+    
+    console.log("SPOT:", spot);
 
+    // 🔥 If it's map (OSM) parking → save first
+    if (!parkingId || parkingId.includes("osm")) {
+      console.log("Saving map parking...");
+
+      const { data } = await parkingAPI.createFromMap({
+        name: spot.name,
+        address: spot.address,
+        lat: spot.lat || spot.location?.coordinates?.[1],
+lng: spot.lng || spot.location?.coordinates?.[0],
+        price: spot.price
+      });
+
+      console.log("Saved spot:", data.spot);
+
+      parkingId = data.spot._id;
+    }
+
+    console.log("Final parkingId:", parkingId);
+
+    const { data } = await bookingAPI.create({ parkingId, hours });
+
+    setBooking(data.booking);
+    toast.success(`Booking ${data.booking.bookingRef} confirmed! ₹${data.booking.total}`);
+
+  } catch (e) {
+    console.error(e);
+    toast.error(e.response?.data?.error || 'Booking failed.');
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal-box">

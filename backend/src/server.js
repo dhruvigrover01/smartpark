@@ -1,5 +1,17 @@
 require('dotenv').config();
 const express = require('express');
+const
+ http    = 
+require
+(
+'http'
+);
+const
+ { Server } = 
+require
+(
+'socket.io'
+);
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -15,6 +27,56 @@ connectDB();
 
 const app = express();
 
+const
+ httpServer = http.
+createServer
+(app);
+ 
+
+const
+ io = 
+new
+Server
+(httpServer, {
+
+  cors: {
+
+    origin: [
+'http://localhost:5173'
+,
+'http://localhost:5174'
+,
+'http://localhost:5176'
+],
+
+    credentials: 
+true
+,
+
+  }
+
+});
+
+io.
+on
+(
+'connection'
+, (socket) => {
+
+  socket.
+on
+(
+'disconnect'
+, () => {});
+
+});
+ 
+
+app.
+set
+(
+'io'
+, io);
 // ── Security middleware ──
 app.use(helmet());
 app.use(cors({
@@ -52,4 +114,10 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 SmartPark API running on port ${PORT}`));
+httpServer.
+listen
+(PORT, () => console.
+log
+(
+`🚀 SmartPark API running on port ${PORT}`
+));
