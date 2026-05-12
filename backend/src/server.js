@@ -40,17 +40,9 @@ Server
 (httpServer, {
 
   cors: {
-
-    origin: [
-'http://localhost:5173',
-'https://smartpark-green.vercel.app'
-],
-
-    credentials: 
-true
-,
-
-  }
+  origin: 'https://smartpark-green.vercel.app',
+  credentials: true
+}
 
 });
 
@@ -75,12 +67,13 @@ set
 'io'
 , io);
 // ── Security middleware ──
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: false,
+  })
+);
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://smartpark-green.vercel.app'
-  ],
+  origin: 'https://smartpark-green.vercel.app',
   credentials: true
 }));
 app.use(express.json({ limit: '10kb' }));
